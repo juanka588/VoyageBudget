@@ -1,24 +1,26 @@
 package voyage.unal.com.voyagebudget;
 
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
+import android.view.View;
 
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
 import voyage.unal.com.voyagebudget.LN.LinnaeusDatabase;
 import voyage.unal.com.voyagebudget.LN.MiLocationListener;
+import voyage.unal.com.voyagebudget.LN.Node;
+import voyage.unal.com.voyagebudget.LN.Util;
 
 public class MapsActivity extends FragmentActivity {
 
@@ -76,10 +78,33 @@ public class MapsActivity extends FragmentActivity {
      */
     private void setUpMap() {
         iniciarLocalService();
+        mapa.setMyLocationEnabled(true);
+        //MiLocationListener.mapa=mapa;
         latitud = MiLocationListener.lat;
         longitud = MiLocationListener.longi;
-        animarCamara(latitud, longitud, 17);
-        mostrarMarcador(latitud, longitud, "Prueba", "mirar", 0);
+        if (latitud == longitud && latitud == 0) {
+        } else {
+            Util.animarCamara(latitud, longitud, 17, mapa);
+            Util.mostrarMarcador(latitud, longitud, "Mi ubicacion", "lat: " + (latitud + "").substring(0, 8)
+                    + " lon: " + (longitud + "").substring(0, 8), 0, marcadores, mapa);
+        }
+        LinnaeusDatabase lb = new LinnaeusDatabase(getApplicationContext());
+        SQLiteDatabase db = openOrCreateDatabase(LinnaeusDatabase.DATABASE_NAME,
+                MODE_WORLD_READABLE, null);
+        String query = "select _id,latitud,longitud,costo,tiempo,prioridad,calificacion, nombre from nodo";
+        Cursor c = db.rawQuery(query, null);
+        String[][] mat = Util.imprimirLista(c);
+        ArrayList<Node> nodos = new ArrayList<>();
+        for (int i = 0; i < mat.length; i++) {
+            Node n = new Node(mat[i][0], mat[i][1], mat[i][2], mat[i][3], mat[i][4], mat[i][5]);
+            nodos.add(n);
+            Util.mostrarMarcador(n.x,n.y,);
+            Log.e("nodo", n.toString());
+        }
+
+        String a = Util.getcolumn(mat, 0)[0].trim();
+        c.close();
+        db.close();
     }
 
     private void iniciarLocalService() {
@@ -102,52 +127,13 @@ public class MapsActivity extends FragmentActivity {
 
     }
 
-    private void animarCamara(double d, double e, int zoom2) {
-        LatLng position = new LatLng(d, e);
-        CameraPosition camPos = new CameraPosition.Builder().target(position)
-                .zoom(zoom2) // Establecemos el zoom en 19
-                .bearing(0) // Establecemos la orientación con el noreste arriba
-                .tilt(0) // Bajamos el punto de vista de la cámara 70 grados
-                .build();
-        CameraUpdate camUpd3 = CameraUpdateFactory.newCameraPosition(camPos);
-
-        mapa.animateCamera(camUpd3);
-
+    public void sitios(View v) {
+        Intent sites = new Intent(this, SitiosActivity.class);
+        startActivity(sites);
     }
 
-    private void mostrarMarcador(double lat, double lng, String title,
-                                 String desc, int tipo) {
-        /*
-         * float a = 0; switch (count) { case 0: a =
-		 * BitmapDescriptorFactory.HUE_CYAN; break; case 1: a =
-		 * BitmapDescriptorFactory.HUE_ORANGE; break; case 2: a =
-		 * BitmapDescriptorFactory.HUE_VIOLET; break; case 3: a =
-		 * BitmapDescriptorFactory.HUE_YELLOW; break; case 4: a =
-		 * BitmapDescriptorFactory.HUE_ORANGE; break;
-		 *
-		 * default: break; }
-		 */
-        if (!marcadores.contains(new LatLng(lat, lng))) {
-            marcadores.add(new LatLng(lat, lng));
-            MarkerOptions k = null;
-            if (tipo == 0) {
-                k = new MarkerOptions()
-                        .position(new LatLng(lat, lng))
-                        .title(title)
-                        .snippet(desc)
-                        .icon(BitmapDescriptorFactory
-                                .defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
-
-            } else {
-                k = new MarkerOptions()
-                        .position(new LatLng(lat, lng))
-                        .title(title)
-                        .snippet(desc)
-                        .icon(BitmapDescriptorFactory
-                                .defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-                // .fromResource(R.drawable.edificiop2));
-            }
-            mapa.addMarker(k);
-        }
+    public void pasos(View v) {
+        Intent steps = new Intent(this, StepsActivity.class);
+        startActivity(steps);
     }
 }
