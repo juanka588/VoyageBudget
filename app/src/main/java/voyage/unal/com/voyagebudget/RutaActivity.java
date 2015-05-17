@@ -3,8 +3,7 @@ package voyage.unal.com.voyagebudget;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.util.Log;
 import android.view.View;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -16,6 +15,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import java.util.ArrayList;
 
 import voyage.unal.com.voyagebudget.LN.Node;
+import voyage.unal.com.voyagebudget.LN.Travel;
 import voyage.unal.com.voyagebudget.LN.Util;
 
 
@@ -24,12 +24,16 @@ public class RutaActivity extends ActionBarActivity {
     private GoogleMap mapa;
     private ArrayList<LatLng> marcadores = new ArrayList<LatLng>();
     private ArrayList<Node> pathOrder;
+    private ArrayList<Node> nodos;
     double latitud;
     double longitud;
     private LatLng posIni;
     private String[][] mat;
     private PolylineOptions polyLine;
     private ArrayList<String> rows;
+    private double time;
+    private double budget;
+    private Node current;
 
     @Override
     protected void onResume() {
@@ -69,6 +73,12 @@ public class RutaActivity extends ActionBarActivity {
         Polyline polyline = mapa.addPolyline(options);
     }
 
+    private void drawLine(Node ini, Node fin) {
+        LatLng a = new LatLng(ini.x, ini.y);
+        LatLng b = new LatLng(fin.x, fin.y);
+        drawLine(a, b);
+    }
+
     private void drawLine(LatLng ini, LatLng fin) {
         polyLine.add(ini);
         polyLine.add(fin);
@@ -91,19 +101,39 @@ public class RutaActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ruta);
         setUpMapIfNeeded();
-        Bundle b=getIntent().getExtras();
+        Bundle b = getIntent().getExtras();
         rows = b.getStringArrayList("rows");
-        final String[][] mat= Util.toMatrix(rows);
-        LatLng ini=null;
-        LatLng fin=null;
-        for(int i=0;i<mat.length;i++){
-            ini=new LatLng(Double.parseDouble(mat[i][1]),Double.parseDouble(mat[i][2]));
-            fin=new LatLng(Double.parseDouble(mat[i][1]),Double.parseDouble(mat[i][2]));
-            drawLine(ini,fin);
+        nodos = new ArrayList<>();
+        final String[][] mat = Util.toMatrix(rows);
+        Node n = null;
+        LatLng pos = null;
+        for (int i = 0; i < mat.length; i++) {
+            n = new Node(mat[i][0], mat[i][1], mat[i][2], mat[i][3], mat[i][4], mat[i][5]);
+            nodos.add(n);
+            pos = new LatLng(n.x, n.y);
+            Util.mostrarMarcador(n.x, n.y, mat[i][7], mat[i][10], 0, marcadores, mapa);
+            marcadores.add(pos);
+            Log.e("nodo", n.toString());
         }
-        /*for(Node n:pathOrder){
-            drawLine();
-        }*/
+        Travel t = new Travel();
+        budget = b.getDouble("presupuesto");
+        time = b.getDouble("tiempo");
+        latitud = b.getDouble("latitud");
+        longitud = b.getDouble("longitud");
+        Util.animarCamara(latitud,longitud,14,mapa);
+        current = new Node(0, latitud, longitud, 0, 0, 0);
+        pathOrder = t.createPath(current, nodos, budget, time);
+        Log.e("bud", budget+"");
+        Log.e("time", time+"");
+        Log.e("lat", latitud+"");
+        Log.e("lon", longitud+"");
+        Log.e("size Path",pathOrder.size()+"");
+        if(!pathOrder.isEmpty())
+            drawLine(current, pathOrder.get(0));
+        for (int i = 1; i < pathOrder.size(); i++) {
+            Log.e("lugar ", pathOrder.get(i - 1).toString());
+            drawLine(pathOrder.get(i - 1), pathOrder.get(i));
+        }
         drawPolilyne(polyLine);
     }
 
