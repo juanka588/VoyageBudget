@@ -1,5 +1,7 @@
 package voyage.unal.com.voyagebudget.LN;
 
+import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -12,6 +14,7 @@ public class Travel {
     public static ArrayList<Node> place;
     public static double maxCost;
     public static double maxTime;
+    public static double bestTime;
     public static int maxPlaces;
     public static int n;
 
@@ -48,10 +51,22 @@ public class Travel {
                     cont ++;
                 }
             }
+            if(cont == maxPlaces){
+                if(time < bestTime){
+                    bestTime = time;
+                    path = tmpSolution;
+                }
+
+            }
+
+
+
             if(cont > maxPlaces){
                 maxPlaces = cont;
+                bestTime = time;
                 path = tmpSolution;
             }
+
         }
     }
 
@@ -62,6 +77,7 @@ public class Travel {
         maxPlaces = 0;
         maxCost = budget;
         maxTime = time;
+        bestTime =(double)Integer.MAX_VALUE;
         n = place.size();
 
         Collections.sort(place);

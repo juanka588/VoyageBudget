@@ -1,7 +1,5 @@
 package voyage.unal.com.voyagebudget;
 
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
@@ -9,6 +7,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,12 +18,16 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-import voyage.unal.com.voyagebudget.LN.LinnaeusDatabase;
 import voyage.unal.com.voyagebudget.LN.Util;
 
 
 public class DetallesActivity extends ActionBarActivity {
 
+    private TextView titulo;
+    private TextView descripcion;
+    private TextView costo;
+    private TextView prioridad;
+    private TextView tiempo;
     private TextView web;
     private ImageView im;
     private RatingBar rt;
@@ -35,12 +38,24 @@ public class DetallesActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detalles);
+        titulo = (TextView) findViewById(R.id.textNombre);
+        descripcion = (TextView) findViewById(R.id.textDescripcion);
+        costo = (TextView) findViewById(R.id.textPrecio);
+        prioridad = (TextView) findViewById(R.id.textPrioridad);
+        tiempo = (TextView) findViewById(R.id.textTiempo);
         web = (TextView) findViewById(R.id.textWebPage);
         im = (ImageView) findViewById(R.id.imageDetalles);
         rt = (RatingBar) findViewById(R.id.calificacionDetalles);
         Bundle b = getIntent().getExtras();
         String cad = b.getString("titulo");
-        LinnaeusDatabase lb = new LinnaeusDatabase(getApplicationContext());
+        String cad2 = b.getString("descripcion");
+        Double cad3 = b.getDouble("costo");
+        Integer cad4 = b.getInt("prioridad");
+        String cad5 = b.getString("sitio_web");
+        Double cad6 = b.getDouble("tiempo");
+        String cad7 = b.getString("imagen");
+        Integer cad8 = b.getInt("calificacion");
+       /* LinnaeusDatabase lb = new LinnaeusDatabase(getApplicationContext());
         SQLiteDatabase db = openOrCreateDatabase(LinnaeusDatabase.DATABASE_NAME,
                 MODE_WORLD_READABLE, null);
         String query = "select nombre, descripcion,costo,prioridad, sitio_web,tiempo," +
@@ -52,23 +67,28 @@ public class DetallesActivity extends ActionBarActivity {
         db.close();
         int ids[] = new int[]{R.id.textNombre, R.id.textDescripcion, R.id.textPrecio, R.id.textPrioridad,
                 R.id.textWebPage, R.id.textTiempo};
-        for (int i = 0; i < mat.length; i++) {
+        for (int i = 0; i < ids.length; i++) {
             TextView tx = (TextView) findViewById(ids[i]);
             tx.setText(mat[0][i]);
-        }
+        }*/
+    titulo.setText(cad);
+        descripcion.setText(cad2);
+        costo.setText("$"+cad3+" "+getString(R.string.money));
+        prioridad.setText(getString(R.string.priority)+" : "+cad4);
+        web.setText(cad5);
+        tiempo.setText(cad6+" "+getString(R.string.hours));
         rt.setNumStars(5);
-        rt.setRating(Float.parseFloat(mat[0][7]));
+        rt.setRating((float) cad8);
         rt.setEnabled(false);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                 .permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        try {
-            loadImageFromNetwork(mat[0][6]);
+        /*try {
+           loadImageFromNetwork(cad7);
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e("IMAGE ERROR",e.toString());
         }
-        c = null;
-        db = null;
+*/
     }
 
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
@@ -92,10 +112,11 @@ public class DetallesActivity extends ActionBarActivity {
         conn.connect();
 
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 2; // el factor de escala a minimizar la imagen, siempre es potencia de 2
+        options.inSampleSize = 4; // el factor de escala a minimizar la imagen, siempre es potencia de 2
 
-        Bitmap imagen = BitmapFactory.decodeStream(conn.getInputStream(), new Rect(0, 0, 0, 0), options);
+        Bitmap imagen = BitmapFactory.decodeStream(conn.getInputStream(), new Rect(20, 20, 20, 20), options);
         im.setImageBitmap(imagen);
+        Log.e("imagen cargada","");
         return imagen;
     }
 

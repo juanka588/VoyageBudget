@@ -1,4 +1,26 @@
 <resources>
-    <string name="app_name">VoyageBudget</string>
-    <string name="title_activity_maps">Map</string>
+    <string name="app_name">Nice Trip</string>
+    <string name="title_activity_maps">Nice Trip</string>
+    <string name="network_exception">No hay conexion a Internet</string>
+    <string name="expanded_app_name">Voyage Budget</string>
+    <string name="acept_dialog">Aceptar</string>
+    <string name="cancel_dialog">Cancelar</string>
+    <string name="database">La Base de Datos ha sido creada</string>
+    <string name="input">Entrar</string>
+    <string name="title_activity_sitios">Sitios de Interes</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_steps">StepsActivity</string>
+    <string name="title_activity_detalles">Detalles</string>
+    <string name="sites">Sitios</string>
+    <string name="showSteps">Ver pasos</string>
+    <string name="title_activity_web"></string>
+    <string name="menu_volver">volver</string>
+    <string name="menu_Recargar">recargar</string>
+    <string name="menu_adelante">adelante</string>
+    <string name="title_activity_ruta">Ruta</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="money">USD</string>
+    <string name="priority">Prioridad</string>
+    <string name="hours">Horas</string>
 </resources>

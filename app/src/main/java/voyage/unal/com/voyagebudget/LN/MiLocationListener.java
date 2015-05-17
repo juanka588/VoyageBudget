@@ -77,7 +77,7 @@ public class MiLocationListener implements LocationListener {
             String a = Util.getcolumn(mat, 0)[0].trim();
             c.close();
             db.close();
-            Util.animarCamara(lat, longi, 15, mapa);
+            Util.animarCamara(lat, longi, 14, mapa);
             Util.mostrarMarcador(lat, longi, "Mi ubicacion", "lat: " + (lat + "").substring(0, 10)
                     + " lon: " + (longi + "").substring(0, 10), 0, null, mapa);
         } catch (Exception e) {

@@ -34,6 +34,46 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".SitiosActivity"
+            android:label="@string/title_activity_sitios"
+            android:parentActivityName=".MapsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="voyage.unal.com.voyagebudget.MapsActivity" />
+        </activity>
+        <activity
+            android:name=".StepsActivity"
+            android:label="@string/title_activity_steps"
+            android:parentActivityName=".MapsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="voyage.unal.com.voyagebudget.MapsActivity" />
+        </activity>
+        <activity
+            android:name=".DetallesActivity"
+            android:label="@string/title_activity_detalles"
+            android:parentActivityName=".SitiosActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="voyage.unal.com.voyagebudget.SitiosActivity" />
+        </activity>
+        <activity
+            android:name=".WebActivity"
+            android:label="@string/title_activity_web"
+            android:parentActivityName=".DetallesActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="voyage.unal.com.voyagebudget.DetallesActivity" />
+        </activity>
+        <activity
+            android:name=".RutaActivity"
+            android:label="@string/title_activity_ruta"
+            android:parentActivityName=".MapsActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="voyage.unal.com.voyagebudget.MapsActivity" />
+        </activity>
     </application>
 
 </manifest>

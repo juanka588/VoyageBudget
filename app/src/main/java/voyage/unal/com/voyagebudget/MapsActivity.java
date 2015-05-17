@@ -10,7 +10,9 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.EditText;
 
+import com.google.android.gms.internal.ii;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
@@ -31,12 +33,15 @@ public class MapsActivity extends FragmentActivity {
     private LatLng posIni;
     private String[][] mat;
     private ArrayList<Node> nodos;
+    private EditText presupuesto,tiempo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         setUpMapIfNeeded();
+        presupuesto=(EditText)findViewById(R.id.presupuesto);
+        tiempo=(EditText)findViewById(R.id.tiempo);
     }
 
     @Override
@@ -101,7 +106,7 @@ public class MapsActivity extends FragmentActivity {
         LinnaeusDatabase lb = new LinnaeusDatabase(getApplicationContext());
         SQLiteDatabase db = openOrCreateDatabase(LinnaeusDatabase.DATABASE_NAME,
                 MODE_WORLD_READABLE, null);
-        String query = "select _id,longitud,latitud,costo,tiempo,prioridad,calificacion, nombre, descripcion from nodo";
+        String query = "select _id,longitud,latitud,costo,tiempo,prioridad,calificacion, nombre, descripcion, imagen, sitio_web from nodo";
         Cursor c = db.rawQuery(query, null);
         mat = Util.imprimirLista(c);
         nodos = new ArrayList<>();
@@ -112,14 +117,14 @@ public class MapsActivity extends FragmentActivity {
             n = new Node(mat[i][0], mat[i][1], mat[i][2], mat[i][3], mat[i][4], mat[i][5]);
             nodos.add(n);
             pos = new LatLng(n.x, n.y);
-            Util.mostrarMarcador(n.x, n.y, mat[i][7], mat[i][8], 0, marcadores, mapa);
+            Util.mostrarMarcador(n.x, n.y, mat[i][7], mat[i][10], 0, marcadores, mapa);
             marcadores.add(pos);
-            Log.e("nodo", n.toString());
         }
         c.close();
         db.close();
         c = null;
         db = null;
+        nodos=null;
     }
 
     private void iniciarLocalService() {
@@ -154,6 +159,10 @@ public class MapsActivity extends FragmentActivity {
     public void ruta(View v) {
         Intent ruta = new Intent(this, RutaActivity.class);
         ruta.putStringArrayListExtra("rows", Util.toArrayList(mat));
+        ruta.putExtra("presupuesto",Double.parseDouble(presupuesto.getText().toString()) );
+        ruta.putExtra("tiempo",Double.parseDouble(tiempo.getText().toString()));
+        ruta.putExtra("latitud",MiLocationListener.lat);
+        ruta.putExtra("longitud",MiLocationListener.longi);
         startActivity(ruta);
     }
 

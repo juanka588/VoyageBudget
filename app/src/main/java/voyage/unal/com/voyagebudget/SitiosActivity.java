@@ -2,22 +2,18 @@ package voyage.unal.com.voyagebudget;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.ArrayList;
 
-import voyage.unal.com.voyagebudget.LN.LinnaeusDatabase;
 import voyage.unal.com.voyagebudget.LN.MiAdaptador;
 import voyage.unal.com.voyagebudget.LN.Util;
 
@@ -26,19 +22,36 @@ public class SitiosActivity extends ActionBarActivity {
     private ListView lv;
     private Activity act;
     private ArrayList<String> rows;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sitios);
         lv = (ListView) findViewById(R.id.listSitios);
-        act=this;
-        Bundle b=getIntent().getExtras();
+        act = this;
+        Bundle b = getIntent().getExtras();
         rows = b.getStringArrayList("rows");
-        String[][] mat=Util.toMatrix(rows);
-        MiAdaptador adapter = new MiAdaptador(this, Util.getcolumn(mat,7), Util.toDouble(Util.getcolumn(mat,6)));
-        lv.setAdapter( adapter);
-        lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-
+        final String[][] mat = Util.toMatrix(rows);
+        MiAdaptador adapter = new MiAdaptador(this, Util.getcolumn(mat, 7), Util.toDouble(Util.getcolumn(mat, 6)));
+        lv.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Util.getcolumn(mat, 7)));
+        //lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent detalles = new Intent(act, DetallesActivity.class);
+                Log.e("mat", Util.toString(mat));
+                detalles.putExtra("titulo", mat[position][7]);
+                detalles.putExtra("descripcion", mat[position][8]);
+                detalles.putExtra("costo", Double.parseDouble(mat[position][3]));
+                detalles.putExtra("prioridad", Integer.parseInt(mat[position][5]));
+                detalles.putExtra("sitio_web", mat[position][10]);
+                detalles.putExtra("tiempo", Double.parseDouble(mat[position][4]));
+                detalles.putExtra("imagen", mat[position][9]);
+                detalles.putExtra("calificacion", Integer.parseInt(mat[position][6]));
+                act.startActivity(detalles);
+                Toast.makeText(act, "selecionado " + mat[position][7], Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
 

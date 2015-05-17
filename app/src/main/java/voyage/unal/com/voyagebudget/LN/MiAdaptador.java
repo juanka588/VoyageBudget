@@ -60,17 +60,9 @@ public class MiAdaptador extends BaseAdapter {
 			textView.setHint(Util.toCammelCase(lista[position].toLowerCase()));
 		}
 		imageView.setImageResource(R.mipmap.ic_launcher);
-        imageView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent detalles=new Intent(actividad,DetallesActivity.class);
-                detalles.putExtra("titulo",lista[position]);
-                actividad.startActivity(detalles);
-            }
-        });
 		rt.setNumStars(5);
-        rt.setEnabled(false);
         rt.setRating(Float.parseFloat(calificacion[position]+""));
+		rt.setEnabled(false);
 		return view;
 	}
 
