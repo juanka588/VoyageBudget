@@ -21,6 +21,7 @@ public class Node implements Comparable<Node> {
         cost = COST;
         time = TIME;
         rate=RATE;
+        this.name=name;
     }
     public Node(Node newNode){
         this.id = newNode.id;

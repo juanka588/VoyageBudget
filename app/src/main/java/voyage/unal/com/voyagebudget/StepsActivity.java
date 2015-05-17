@@ -26,9 +26,11 @@ public class StepsActivity extends ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_steps);
         lv = (ListView) findViewById(R.id.listSteps);
-        String[] items = new String[30];
+        pasos=RutaActivity.pathOrder;
+        String[] items = new String[pasos.size()];
+
         for (int i=0;i<items.length;i++){
-            items[i]=(i+1)+" source";
+            items[i]=pasos.get(i).toString();
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
         lv.setAdapter(adapter);

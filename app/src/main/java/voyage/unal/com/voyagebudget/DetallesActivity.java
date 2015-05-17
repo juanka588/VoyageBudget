@@ -68,7 +68,9 @@ public class DetallesActivity extends ActionBarActivity {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                 .permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        new DownloadImageTask(im).execute(cad7);
+        if(Util.isOnline(this)) {
+            new DownloadImageTask(im).execute(cad7);
+        }
     }
 
 

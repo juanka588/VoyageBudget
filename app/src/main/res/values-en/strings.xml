@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Nice Trip</string>
+    <string name="acept_dialog">Acept</string>
+    <string name="action_settings">Settings</string>
+    <string name="cancel_dialog">Cancel</string>
+    <string name="database">The Data Base has been created</string>
+    <string name="expanded_app_name">Voyage Budget</string>
+    <string name="hello_world">Hello World</string>
+    <string name="hours">Hours</string>
+    <string name="input">Input</string>
+    <string name="menu_Recargar">Refresh</string>
+    <string name="menu_adelante">Forward</string>
+    <string name="menu_volver">Back</string>
+    <string name="money">USD</string>
+    <string name="network_exception">No connection Detected</string>
+    <string name="priority">Priority</string>
+    <string name="showSteps">Show steps</string>
+    <string name="sites">Sites</string>
+    <string name="title_activity_detalles">Details</string>
+    <string name="title_activity_maps">Nice Trip</string>
+    <string name="title_activity_ruta">Route</string>
+    <string name="title_activity_sitios">Interesting points</string>
+    <string name="title_activity_steps">Steps</string>
+</resources>

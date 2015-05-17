@@ -6,10 +6,10 @@
     <string name="acept_dialog">Aceptar</string>
     <string name="cancel_dialog">Cancelar</string>
     <string name="database">La Base de Datos ha sido creada</string>
-    <string name="input">Entrar</string>
+    <string name="input">Ingresar</string>
     <string name="title_activity_sitios">Sitios de Interes</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_steps">StepsActivity</string>
+    <string name="title_activity_steps">Pasos</string>
     <string name="title_activity_detalles">Detalles</string>
     <string name="sites">Sitios</string>
     <string name="showSteps">Ver pasos</string>

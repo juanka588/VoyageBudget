@@ -45,7 +45,7 @@ public class RutaActivity extends ActionBarActivity {
 
     private GoogleMap mapa;
     private ArrayList<LatLng> marcadores = new ArrayList<LatLng>();
-    private ArrayList<Step> pathOrder;
+    public static ArrayList<Step> pathOrder;
     private ArrayList<Node> nodos;
     double latitud;
     double longitud;
@@ -60,7 +60,7 @@ public class RutaActivity extends ActionBarActivity {
     private JSONObject jsonArray;
     private String readTwitterFeed;
     private ArrayList<LatLng> detailStep;
-
+    private int counter=0;
     @Override
     protected void onResume() {
         super.onResume();
@@ -119,32 +119,18 @@ public class RutaActivity extends ActionBarActivity {
     }
 
     private void drawLine(LatLng ini, LatLng fin) {
-        Random rnd = new Random();
-        int r = rnd.nextInt(8);
+
         int color = Color.RED;
-        switch (r) {
+        switch (counter) {
             case 0:
-                color = Color.BLUE;
+                color = Color.RED;
                 break;
             case 1:
-                color = Color.GREEN;
-                break;
-            case 2:
-                color = Color.CYAN;
-                break;
-            case 3:
-                color = Color.MAGENTA;
-                break;
-            case 4:
-                color = Color.BLACK;
-                break;
-            case 5:
-                color = Color.YELLOW;
-                break;
-            case 6:
-                color = Color.GRAY;
+                color = Color.BLUE;
                 break;
         }
+        counter++;
+        counter=counter%2;
         polyLine.add(ini).color(color).width(5).geodesic(true);
         polyLine.add(fin).color(color).width(5).geodesic(true);
     }
@@ -251,12 +237,6 @@ public class RutaActivity extends ActionBarActivity {
         Util.animarCamara(latitud, longitud, 14, mapa);
         current = new Node(0, latitud, longitud, "Mi ubicacion", 0, 0, 0);
         pathOrder = t.createPath(current, nodos, budget, time);
-        /*Log.e("bud", budget + "");
-        Log.e("time", time + "");
-        Log.e("lat", latitud + "");
-        Log.e("lon", longitud + "");
-        Log.e("size Path", pathOrder.size() + "");
-        */
         for (int i = 0; i < pathOrder.size(); i++) {
             Log.e("from ", pathOrder.get(i).from.toString());
             Log.e("to ", pathOrder.get(i).to.toString());

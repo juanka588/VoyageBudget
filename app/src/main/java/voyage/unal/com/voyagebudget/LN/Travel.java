@@ -80,7 +80,7 @@ public class Travel {
         bestTime =(double)Integer.MAX_VALUE;
         n = place.size();
 
-        Collections.sort(place);
+      //  Collections.sort(place);
 
         /*for(int i = 0; i < graph.size(); i ++){
             System.out.println("x " + graph.get(i).x + " y " + graph.get(i).y +
@@ -90,6 +90,7 @@ public class Travel {
         int sumCost = 0, sumTime = 0;
 
         n = Math.min(10,place.size());
+
 
         for(int i = 0; i < n; i ++) {
             permutation(place.get(i).cost,place.get(i).time + distance(current, place.get(i)), (1<<i), i);
@@ -101,25 +102,28 @@ public class Travel {
         //Log.e("best time was ", ""+bestTime);
         ArrayList<Step>trip = new ArrayList();
 
-        if(!path.isEmpty())
-            trip.add(new Step(current,path.get(0), maxTime - path.get(0).time - distance(current,path.get(0)), maxCost - path.get(0).cost));
 
-        double currentCost =  maxCost - path.get(0).cost;
-        double currentTime = maxTime - path.get(0).time + distance(current,path.get(0));
+        // trip.add(new Step(current,path.get(0), maxTime - path.get(0).time - distance(current,path.get(0)), maxCost - path.get(0).cost));
 
-        for( int i = 1 ; i < n; i ++ ){
-            Node e1 = new Node(place.get(i - 1));
-            Node e2 = new Node(place.get(i));
+        double currentCost =  budget;
+        double currentTime = maxTime;
+
+        if(!path.isEmpty()){
+            Node e1 = new Node(current);
+            Node e2 = new Node(path.get(0));
             trip.add(new Step(e1,e2,currentTime - e1.time - e2.time - distance(e1,e2), currentCost - e1.cost - e2.cost));
             currentTime -= e1.time - e2.time;
             currentCost -= e1.cost - e2.cost;
         }
 
+        for( int i = 1 ; i < path.size(); i ++ ){
+            Node e1 = new Node(path.get(i - 1));
+            Node e2 = new Node(path.get(i));
+            trip.add(new Step(e1,e2,currentTime - e2.time - distance(e1,e2), currentCost - e2.cost));
+            currentTime -= e2.time;
+            currentCost -= e2.cost;
+        }
+
         return trip;
     }
-
-
-    public static void main(String[] args) {
-    }
-
 }
