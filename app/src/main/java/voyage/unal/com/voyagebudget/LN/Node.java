@@ -6,6 +6,7 @@ package voyage.unal.com.voyagebudget.LN;
 public class Node implements Comparable<Node> {
 
     public int id;
+    public String name;
     public double x;
     public double y;
     public double cost;
@@ -13,7 +14,7 @@ public class Node implements Comparable<Node> {
     public double rate;
     public double fitness;
 
-    public Node(int id, double X, double Y, double COST, double TIME, double RATE) {
+    public Node(int id, double X, double Y,String name, double COST, double TIME, double RATE) {
         this.id = id;
         x = X;
         y = Y;
@@ -22,13 +23,14 @@ public class Node implements Comparable<Node> {
         rate=RATE;
     }
 
-    public Node(String s, String s1, String s2, String s3, String s4, String s5) {
+    public Node(String s, String s1, String s2,String name, String s3, String s4, String s5) {
         id = Integer.parseInt(s);
         x = Double.parseDouble(s1);
         y = Double.parseDouble(s2);
         cost = Double.parseDouble(s3);
         time = Double.parseDouble(s4);
         rate = Double.parseDouble(s5);
+        this.name=name;
     }
 
     @Override

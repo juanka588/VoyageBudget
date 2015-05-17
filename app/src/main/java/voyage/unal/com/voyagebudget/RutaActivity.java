@@ -98,7 +98,7 @@ public class RutaActivity extends ActionBarActivity {
     }
 
     private void drawLine(Node ini, Node fin) {
-       /* StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+       StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                 .permitAll().build();
         StrictMode.setThreadPolicy(policy);
         URL url;
@@ -110,7 +110,6 @@ public class RutaActivity extends ActionBarActivity {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
-*/
         LatLng a = new LatLng(ini.x, ini.y);
         LatLng b = new LatLng(fin.x, fin.y);
         drawLine(a, b);
@@ -118,9 +117,9 @@ public class RutaActivity extends ActionBarActivity {
 
     private void drawLine(LatLng ini, LatLng fin) {
         Random rnd = new Random();
-        int r=rnd.nextInt(8);
+        int r = rnd.nextInt(8);
         int color = Color.RED;
-        switch (r){
+        switch (r) {
             case 0:
                 color = Color.BLUE;
                 break;
@@ -144,8 +143,10 @@ public class RutaActivity extends ActionBarActivity {
                 break;
         }
 
-        polyLine.add(ini).color(color).width(5).geodesic(true);;
-        polyLine.add(fin).color(color).width(5).geodesic(true);;
+        polyLine.add(ini).color(color).width(5).geodesic(true);
+        ;
+        polyLine.add(fin).color(color).width(5).geodesic(true);
+        ;
     }
 
     public void recargarLista() {
@@ -154,13 +155,7 @@ public class RutaActivity extends ActionBarActivity {
             jsonArray = new JSONArray(readTwitterFeed);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                String arr[] = new String[]{jsonObject.getString("titulo"),
-                        jsonObject.getString("descripcion"),
-                        jsonObject.getString("lugar"),
-                        jsonObject.getString("fecha"),
-                        jsonObject.getString("email"),
-                        jsonObject.getString("enlace"),
-                        jsonObject.getString("telefono")};
+                String arr[] = new String[]{jsonObject.getString("legs")};
                 cad2.add(arr);
             }
 
@@ -203,7 +198,7 @@ public class RutaActivity extends ActionBarActivity {
                     }
                 } else {
                     Toast.makeText(getApplicationContext(),
-                            "No se ha accedido al servidor de Eventos", 1)
+                            "No se ha accedido al servidor de Eventos", Toast.LENGTH_SHORT)
                             .show();
                     Log.e(RutaActivity.class.toString(),
                             "Failed to download file");
@@ -242,10 +237,10 @@ public class RutaActivity extends ActionBarActivity {
         Node n = null;
         LatLng pos = null;
         for (int i = 0; i < mat.length; i++) {
-            n = new Node(mat[i][0], mat[i][1], mat[i][2], mat[i][3], mat[i][4], mat[i][5]);
+            n = new Node(mat[i][0], mat[i][1], mat[i][2],mat[i][7], mat[i][3], mat[i][4], mat[i][5]);
             nodos.add(n);
             pos = new LatLng(n.x, n.y);
-            Util.mostrarMarcador(n.x, n.y, mat[i][7], mat[i][10], 2, marcadores, mapa);
+            Util.mostrarMarcador(n.x, n.y, n.name, mat[i][10], 2, marcadores, mapa);
             marcadores.add(pos);
             Log.e("nodo", n.toString());
         }
@@ -255,15 +250,19 @@ public class RutaActivity extends ActionBarActivity {
         latitud = b.getDouble("latitud");
         longitud = b.getDouble("longitud");
         Util.animarCamara(latitud, longitud, 14, mapa);
-        current = new Node(0, latitud, longitud, 0, 0, 0);
+        current = new Node(0, latitud, longitud,"Mi ubicacion", 0, 0, 0);
         pathOrder = t.createPath(current, nodos, budget, time);
         Log.e("bud", budget + "");
         Log.e("time", time + "");
         Log.e("lat", latitud + "");
         Log.e("lon", longitud + "");
         Log.e("size Path", pathOrder.size() + "");
-        if (!pathOrder.isEmpty())
+        if (!pathOrder.isEmpty()) {
             drawLine(current, pathOrder.get(0));
+            drawPolilyne(polyLine);
+            polyLine = new PolylineOptions();
+        }
+
         for (int i = 1; i < pathOrder.size(); i++) {
             Log.e("lugar ", pathOrder.get(i - 1).toString());
             drawLine(pathOrder.get(i - 1), pathOrder.get(i));

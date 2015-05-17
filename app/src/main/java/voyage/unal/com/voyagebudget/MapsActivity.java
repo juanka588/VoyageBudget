@@ -114,10 +114,10 @@ public class MapsActivity extends FragmentActivity {
         Node n = null;
         LatLng pos = null;
         for (int i = 0; i < mat.length; i++) {
-            n = new Node(mat[i][0], mat[i][1], mat[i][2], mat[i][3], mat[i][4], mat[i][5]);
+            n = new Node(mat[i][0], mat[i][1], mat[i][2],mat[i][7], mat[i][3], mat[i][4], mat[i][5]);
             nodos.add(n);
             pos = new LatLng(n.x, n.y);
-            Util.mostrarMarcador(n.x, n.y, mat[i][7], mat[i][10], 1, marcadores, mapa);
+            Util.mostrarMarcador(n.x, n.y, n.name, mat[i][10], 1, marcadores, mapa);
             marcadores.add(pos);
         }
         c.close();

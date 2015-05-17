@@ -30,8 +30,11 @@ public class SitiosActivity extends ActionBarActivity {
         lv = (ListView) findViewById(R.id.listSitios);
         act = this;
         Bundle b = getIntent().getExtras();
-
-        rows = b.getStringArrayList("rows");
+        try {
+            rows = b.getStringArrayList("rows");
+        } catch (Exception e) {
+            Log.e("error Sitios", e.toString());
+        }
         final String[][] mat = Util.toMatrix(rows);
         MiAdaptador adapter = new MiAdaptador(this, Util.getcolumn(mat, 7), Util.toDouble(Util.getcolumn(mat, 6)));
         lv.setAdapter(new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, Util.getcolumn(mat, 7)));

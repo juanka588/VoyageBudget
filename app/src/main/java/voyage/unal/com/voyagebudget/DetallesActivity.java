@@ -106,9 +106,9 @@ public class DetallesActivity extends ActionBarActivity {
         conn.connect();
 
         BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inSampleSize = 4; // el factor de escala a minimizar la imagen, siempre es potencia de 2
+        options.inSampleSize = 2; // el factor de escala a minimizar la imagen, siempre es potencia de 2
 
-        Bitmap imagen = BitmapFactory.decodeStream(conn.getInputStream(), new Rect(20, 20, 20, 20), options);
+        Bitmap imagen = BitmapFactory.decodeStream(conn.getInputStream(), new Rect(0, 0, 0, 0), options);
         im.setImageBitmap(imagen);
         Log.e("imagen cargada", "");
         return imagen;
