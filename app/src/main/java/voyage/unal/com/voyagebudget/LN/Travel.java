@@ -70,7 +70,7 @@ public class Travel {
 
     }
 
-    public ArrayList<Node> createPath(Node current, ArrayList<Node> graph , double budget, double time){
+    public ArrayList<Step> createPath(Node current, ArrayList<Node> graph , double budget, double time){
 
         place = graph;
         path = new ArrayList();
@@ -89,15 +89,6 @@ public class Travel {
 
         int sumCost = 0, sumTime = 0;
 
-        for(int i = 0; i < place.size(); i ++){
-       /*     sumCost += place.get(i).cost;
-            sumTime += place.get(i).time;
-            if(sumCost > maxCost || sumTime > maxTime){
-                n = i;
-                break;
-            }
-         */
-        }
         n = Math.min(10,place.size());
 
         for(int i = 0; i < n; i ++) {
@@ -108,7 +99,23 @@ public class Travel {
             System.out.println("lugar#"+ ++idx + " " + it.id);
         }*/
         //Log.e("best time was ", ""+bestTime);
-        return path;
+        ArrayList<Step>trip = new ArrayList();
+
+        if(!path.isEmpty())
+            trip.add(new Step(current,path.get(0), maxTime - path.get(0).time - distance(current,path.get(0)), maxCost - path.get(0).cost));
+
+        double currentCost =  maxCost - path.get(0).cost;
+        double currentTime = maxTime - path.get(0).time + distance(current,path.get(0));
+
+        for(int i = 1 ; i < n; i ++){
+            Node e1 = place.get(i - 1);
+            Node e2 = place.get(i);
+            trip.add(new Step(e1,e2,currentTime - e1.time- e2.time - distance(e1,e2), currentCost - e1.cost - e2.cost));
+            currentTime -= e1.time - e2.time;
+            currentTime -= e1.cost - e2.cost;
+        }
+
+        return trip;
     }
 
 
