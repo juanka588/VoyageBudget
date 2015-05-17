@@ -4,12 +4,19 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+
+import java.util.ArrayList;
+
+import voyage.unal.com.voyagebudget.LN.Step;
 
 
 public class StepsActivity extends ActionBarActivity {
     private ListView lv;
+    private ArrayList<Step> pasos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -22,6 +29,12 @@ public class StepsActivity extends ActionBarActivity {
         }
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, items);
         lv.setAdapter(adapter);
+        lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+        });
     }
 
 

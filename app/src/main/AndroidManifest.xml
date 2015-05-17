@@ -36,7 +36,6 @@
         </activity>
         <activity
             android:name=".SitiosActivity"
-            android:alwaysRetainTaskState="true"
             android:launchMode="singleInstance"
             android:label="@string/title_activity_sitios"
             android:parentActivityName=".MapsActivity" >

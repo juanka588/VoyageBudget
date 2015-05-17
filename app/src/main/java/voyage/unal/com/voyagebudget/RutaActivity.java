@@ -36,6 +36,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import voyage.unal.com.voyagebudget.LN.Node;
+import voyage.unal.com.voyagebudget.LN.Step;
 import voyage.unal.com.voyagebudget.LN.Travel;
 import voyage.unal.com.voyagebudget.LN.Util;
 
@@ -44,7 +45,7 @@ public class RutaActivity extends ActionBarActivity {
 
     private GoogleMap mapa;
     private ArrayList<LatLng> marcadores = new ArrayList<LatLng>();
-    private ArrayList<Node> pathOrder;
+    private ArrayList<Step> pathOrder;
     private ArrayList<Node> nodos;
     double latitud;
     double longitud;
@@ -56,8 +57,9 @@ public class RutaActivity extends ActionBarActivity {
     private double budget;
     private Node current;
     private boolean recargable;
-    private JSONArray jsonArray;
+    private JSONObject jsonArray;
     private String readTwitterFeed;
+    private ArrayList<LatLng> detailStep;
 
     @Override
     protected void onResume() {
@@ -142,22 +144,18 @@ public class RutaActivity extends ActionBarActivity {
                 color = Color.GRAY;
                 break;
         }
-
         polyLine.add(ini).color(color).width(5).geodesic(true);
-        ;
         polyLine.add(fin).color(color).width(5).geodesic(true);
-        ;
     }
 
     public void recargarLista() {
-        ArrayList<String[]> cad2 = new ArrayList<String[]>();
+        Log.e("recargar","intentando");
         try {
-            jsonArray = new JSONArray(readTwitterFeed);
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                String arr[] = new String[]{jsonObject.getString("legs")};
-                cad2.add(arr);
-            }
+            jsonArray = new JSONObject(readTwitterFeed);
+            JSONArray rutas= (JSONArray) jsonArray.get("routes");
+            JSONObject bounds=  rutas.getJSONObject(0);
+            JSONObject steps= (JSONObject) bounds.get("steps");
+            Log.e("rutas",steps.toString());
 
         } catch (Exception e) {
             Log.e("Error Eventos", e.toString());
@@ -169,9 +167,10 @@ public class RutaActivity extends ActionBarActivity {
         @Override
         protected String doInBackground(URL... params) {
             // TODO Auto-generated method stub
+            detailStep=new ArrayList<>();
             readTwitterFeed = readJSONFeed(params[0]);
             recargable = true;
-            Log.e("JSON Leido", readTwitterFeed);
+            recargarLista();
             return readTwitterFeed;
         }
 
@@ -242,7 +241,6 @@ public class RutaActivity extends ActionBarActivity {
             pos = new LatLng(n.x, n.y);
             Util.mostrarMarcador(n.x, n.y, n.name, mat[i][10], 2, marcadores, mapa);
             marcadores.add(pos);
-            Log.e("nodo", n.toString());
         }
         Travel t = new Travel();
         budget = b.getDouble("presupuesto");
@@ -252,20 +250,16 @@ public class RutaActivity extends ActionBarActivity {
         Util.animarCamara(latitud, longitud, 14, mapa);
         current = new Node(0, latitud, longitud, "Mi ubicacion", 0, 0, 0);
         pathOrder = t.createPath(current, nodos, budget, time);
-        Log.e("bud", budget + "");
+        /*Log.e("bud", budget + "");
         Log.e("time", time + "");
         Log.e("lat", latitud + "");
         Log.e("lon", longitud + "");
         Log.e("size Path", pathOrder.size() + "");
-        if (!pathOrder.isEmpty()) {
-            drawLine(current, pathOrder.get(0));
-            drawPolilyne(polyLine);
-            polyLine = new PolylineOptions();
-        }
-
-        for (int i = 1; i < pathOrder.size(); i++) {
-            Log.e("lugar ", pathOrder.get(i - 1).toString());
-            drawLine(pathOrder.get(i - 1), pathOrder.get(i));
+        */
+        for (int i = 0; i < pathOrder.size(); i++) {
+            Log.e("from ", pathOrder.get(i).from.toString());
+            Log.e("to ", pathOrder.get(i).to.toString());
+            drawLine(pathOrder.get(i).from, pathOrder.get(i).to);
             drawPolilyne(polyLine);
             polyLine = new PolylineOptions();
         }

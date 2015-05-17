@@ -35,7 +35,7 @@ public class Node implements Comparable<Node> {
 
     @Override
     public String toString() {
-        return "id " + id + " x " + x + " y " + y + " cost " + cost + " time " + time;
+        return "id " + id +" name "+name +" x " + x + " y " + y + " cost " + cost + " time " + time;
     }
 
     public int compareTo(Node compareNode) {
