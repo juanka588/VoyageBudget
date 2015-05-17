@@ -10,10 +10,13 @@ import android.view.View;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 
 import voyage.unal.com.voyagebudget.LN.Node;
+import voyage.unal.com.voyagebudget.LN.Util;
 
 
 public class RutaActivity extends ActionBarActivity {
@@ -25,6 +28,8 @@ public class RutaActivity extends ActionBarActivity {
     double longitud;
     private LatLng posIni;
     private String[][] mat;
+    private PolylineOptions polyLine;
+    private ArrayList<String> rows;
 
     @Override
     protected void onResume() {
@@ -51,13 +56,22 @@ public class RutaActivity extends ActionBarActivity {
         // Do a null check to confirm that we have not already instantiated the map.
         if (mapa == null) {
             // Try to obtain the map from the SupportMapFragment.
-            mapa = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map))
+            mapa = ((SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapRuta))
                     .getMap();
             // Check if we were successful in obtaining the map.
             if (mapa != null) {
                 setUpMap();
             }
         }
+    }
+
+    private void drawPolilyne(PolylineOptions options) {
+        Polyline polyline = mapa.addPolyline(options);
+    }
+
+    private void drawLine(LatLng ini, LatLng fin) {
+        polyLine.add(ini);
+        polyLine.add(fin);
     }
 
     /**
@@ -69,35 +83,28 @@ public class RutaActivity extends ActionBarActivity {
     private void setUpMap() {
         mapa.setMyLocationEnabled(true);
         mapa.getUiSettings().setZoomControlsEnabled(true);
+        polyLine = new PolylineOptions();
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ruta);
-    }
-
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_ruta, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        setUpMapIfNeeded();
+        Bundle b=getIntent().getExtras();
+        rows = b.getStringArrayList("rows");
+        final String[][] mat= Util.toMatrix(rows);
+        LatLng ini=null;
+        LatLng fin=null;
+        for(int i=0;i<mat.length;i++){
+            ini=new LatLng(Double.parseDouble(mat[i][1]),Double.parseDouble(mat[i][2]));
+            fin=new LatLng(Double.parseDouble(mat[i][1]),Double.parseDouble(mat[i][2]));
+            drawLine(ini,fin);
         }
-
-        return super.onOptionsItemSelected(item);
+        /*for(Node n:pathOrder){
+            drawLine();
+        }*/
+        drawPolilyne(polyLine);
     }
 
     public void pasos(View v) {
