@@ -28,6 +28,9 @@ public class MapsActivity extends FragmentActivity {
     private ArrayList<LatLng> marcadores = new ArrayList<LatLng>();
     double latitud;
     double longitud;
+    private LatLng posIni;
+    private String[][] mat;
+    private ArrayList<Node> nodos;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,61 +82,80 @@ public class MapsActivity extends FragmentActivity {
     private void setUpMap() {
         iniciarLocalService();
         mapa.setMyLocationEnabled(true);
-        //MiLocationListener.mapa=mapa;
+        mapa.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
+            @Override
+            public void onMapLongClick(LatLng latLng) {
+                posIni = latLng;
+            }
+        });
+        mapa.getUiSettings().setZoomControlsEnabled(true);
+        MiLocationListener.mapa = mapa;
         latitud = MiLocationListener.lat;
         longitud = MiLocationListener.longi;
         if (latitud == longitud && latitud == 0) {
         } else {
-            Util.animarCamara(latitud, longitud, 17, mapa);
+            Util.animarCamara(latitud, longitud, 15, mapa);
             Util.mostrarMarcador(latitud, longitud, "Mi ubicacion", "lat: " + (latitud + "").substring(0, 8)
                     + " lon: " + (longitud + "").substring(0, 8), 0, marcadores, mapa);
         }
         LinnaeusDatabase lb = new LinnaeusDatabase(getApplicationContext());
         SQLiteDatabase db = openOrCreateDatabase(LinnaeusDatabase.DATABASE_NAME,
                 MODE_WORLD_READABLE, null);
-        String query = "select _id,latitud,longitud,costo,tiempo,prioridad,calificacion, nombre from nodo";
+        String query = "select _id,longitud,latitud,costo,tiempo,prioridad,calificacion, nombre, descripcion from nodo";
         Cursor c = db.rawQuery(query, null);
-        String[][] mat = Util.imprimirLista(c);
-        ArrayList<Node> nodos = new ArrayList<>();
+        mat = Util.imprimirLista(c);
+        nodos = new ArrayList<>();
+        marcadores = new ArrayList<>();
+        Node n = null;
+        LatLng pos = null;
         for (int i = 0; i < mat.length; i++) {
-            Node n = new Node(mat[i][0], mat[i][1], mat[i][2], mat[i][3], mat[i][4], mat[i][5]);
+            n = new Node(mat[i][0], mat[i][1], mat[i][2], mat[i][3], mat[i][4], mat[i][5]);
             nodos.add(n);
-            Util.mostrarMarcador(n.x,n.y,);
+            pos = new LatLng(n.x, n.y);
+            Util.mostrarMarcador(n.x, n.y, mat[i][7], mat[i][8], 0, marcadores, mapa);
+            marcadores.add(pos);
             Log.e("nodo", n.toString());
         }
-
-        String a = Util.getcolumn(mat, 0)[0].trim();
         c.close();
         db.close();
+        c = null;
+        db = null;
     }
 
     private void iniciarLocalService() {
-        LocationManager milocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        LocationListener milocListener = new MiLocationListener();
-        MiLocationListener.appcont = this.getApplicationContext();
-        LinnaeusDatabase lb = new LinnaeusDatabase(getApplicationContext());
-        MiLocationListener.db = openOrCreateDatabase(LinnaeusDatabase.DATABASE_NAME,
-                MODE_WORLD_READABLE, null);
-        try {
+        if (MiLocationListener.isEnableLocation) {
 
-            milocManager.requestLocationUpdates(
-                    LocationManager.NETWORK_PROVIDER, 0, 0, milocListener);
-        } catch (Exception e) {
+        } else {
+            LocationManager milocManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            LocationListener milocListener = new MiLocationListener();
+            MiLocationListener.appcont = this.getApplicationContext();
+            LinnaeusDatabase lb = new LinnaeusDatabase(getApplicationContext());
+            MiLocationListener.db = openOrCreateDatabase(LinnaeusDatabase.DATABASE_NAME,
+                    MODE_WORLD_READABLE, null);
+            try {
 
-        } finally {
-            milocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
-                    0, 0, milocListener);
+                milocManager.requestLocationUpdates(
+                        LocationManager.NETWORK_PROVIDER, 0, 0, milocListener);
+            } catch (Exception e) {
+
+            } finally {
+                milocManager.requestLocationUpdates(LocationManager.GPS_PROVIDER,
+                        0, 0, milocListener);
+            }
         }
-
     }
 
     public void sitios(View v) {
         Intent sites = new Intent(this, SitiosActivity.class);
+        sites.putStringArrayListExtra("rows", Util.toArrayList(mat));
         startActivity(sites);
     }
 
-    public void pasos(View v) {
-        Intent steps = new Intent(this, StepsActivity.class);
-        startActivity(steps);
+    public void ruta(View v) {
+        Intent ruta = new Intent(this, RutaActivity.class);
+        ruta.putStringArrayListExtra("rows", Util.toArrayList(mat));
+        startActivity(ruta);
     }
+
+
 }
