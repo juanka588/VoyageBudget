@@ -1,5 +1,7 @@
 package voyage.unal.com.voyagebudget;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
@@ -11,6 +13,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import voyage.unal.com.voyagebudget.LN.Node;
 import voyage.unal.com.voyagebudget.LN.Step;
 
 
@@ -32,7 +35,14 @@ public class StepsActivity extends ActionBarActivity {
         lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                Node ini=pasos.get(position).from;
+                Node fin=pasos.get(position).to;
+                Intent navigation = new Intent(Intent.ACTION_VIEW,
+                        Uri.parse("http://maps.google.com/maps?" + "saddr="
+                                + ini.x + ","
+                                + ini.y + "&daddr=" + fin.x + ","
+                                + fin.y));
+                startActivity(navigation);
             }
         });
     }
