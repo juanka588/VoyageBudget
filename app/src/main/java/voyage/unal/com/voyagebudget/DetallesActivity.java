@@ -15,6 +15,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -55,56 +56,49 @@ public class DetallesActivity extends ActionBarActivity {
         Double cad6 = b.getDouble("tiempo");
         String cad7 = b.getString("imagen");
         Integer cad8 = b.getInt("calificacion");
-       /* LinnaeusDatabase lb = new LinnaeusDatabase(getApplicationContext());
-        SQLiteDatabase db = openOrCreateDatabase(LinnaeusDatabase.DATABASE_NAME,
-                MODE_WORLD_READABLE, null);
-        String query = "select nombre, descripcion,costo,prioridad, sitio_web,tiempo," +
-                "imagen,calificacion from nodo";
-
-        Cursor c = db.rawQuery(query, null);
-        String[][] mat = Util.imprimirLista(c);
-        c.close();
-        db.close();
-        int ids[] = new int[]{R.id.textNombre, R.id.textDescripcion, R.id.textPrecio, R.id.textPrioridad,
-                R.id.textWebPage, R.id.textTiempo};
-        for (int i = 0; i < ids.length; i++) {
-            TextView tx = (TextView) findViewById(ids[i]);
-            tx.setText(mat[0][i]);
-        }*/
-    titulo.setText(cad);
+        titulo.setText(cad);
         descripcion.setText(cad2);
-        costo.setText("$"+cad3+" "+getString(R.string.money));
-        prioridad.setText(getString(R.string.priority)+" : "+cad4);
+        costo.setText("$" + cad3 + " " + getString(R.string.money));
+        prioridad.setText(getString(R.string.priority) + " : " + cad4);
         web.setText(cad5);
-        tiempo.setText(cad6+" "+getString(R.string.hours));
+        tiempo.setText(cad6 + " " + getString(R.string.hours));
         rt.setNumStars(5);
         rt.setRating((float) cad8);
         rt.setEnabled(false);
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                 .permitAll().build();
         StrictMode.setThreadPolicy(policy);
-        /*try {
-           loadImageFromNetwork(cad7);
-        } catch (IOException e) {
-            Log.e("IMAGE ERROR",e.toString());
-        }
-*/
+        new DownloadImageTask(im).execute(cad7);
     }
 
+
     private class DownloadImageTask extends AsyncTask<String, Void, Bitmap> {
-        @Override
+        ImageView bmImage;
+
+        public DownloadImageTask(ImageView bmImage) {
+            this.bmImage = bmImage;
+        }
+
         protected Bitmap doInBackground(String... urls) {
+            String urldisplay = urls[0];
+            Bitmap mIcon11 = null;
             try {
-                return loadImageFromNetwork(urls[0]);
+                InputStream in = new java.net.URL(urldisplay).openStream();
+                BitmapFactory.Options options = new BitmapFactory.Options();
+                options.inSampleSize = 4;
+                mIcon11 = BitmapFactory.decodeStream(in, new Rect(20, 20, 20, 20), options);
             } catch (Exception e) {
-                return null;
+                Log.e("Error", e.getMessage());
+                e.printStackTrace();
             }
+            return mIcon11;
         }
 
         protected void onPostExecute(Bitmap result) {
-            im.setImageBitmap(result);
+            bmImage.setImageBitmap(result);
         }
     }
+
 
     private Bitmap loadImageFromNetwork(String url) throws IOException {
         imageUrl = new URL(url);
@@ -116,7 +110,7 @@ public class DetallesActivity extends ActionBarActivity {
 
         Bitmap imagen = BitmapFactory.decodeStream(conn.getInputStream(), new Rect(20, 20, 20, 20), options);
         im.setImageBitmap(imagen);
-        Log.e("imagen cargada","");
+        Log.e("imagen cargada", "");
         return imagen;
     }
 

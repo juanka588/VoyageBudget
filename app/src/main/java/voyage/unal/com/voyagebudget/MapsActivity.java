@@ -101,7 +101,7 @@ public class MapsActivity extends FragmentActivity {
         } else {
             Util.animarCamara(latitud, longitud, 15, mapa);
             Util.mostrarMarcador(latitud, longitud, "Mi ubicacion", "lat: " + (latitud + "").substring(0, 8)
-                    + " lon: " + (longitud + "").substring(0, 8), 0, marcadores, mapa);
+                    + " lon: " + (longitud + "").substring(0, 8), 2, marcadores, mapa);
         }
         LinnaeusDatabase lb = new LinnaeusDatabase(getApplicationContext());
         SQLiteDatabase db = openOrCreateDatabase(LinnaeusDatabase.DATABASE_NAME,
@@ -117,7 +117,7 @@ public class MapsActivity extends FragmentActivity {
             n = new Node(mat[i][0], mat[i][1], mat[i][2], mat[i][3], mat[i][4], mat[i][5]);
             nodos.add(n);
             pos = new LatLng(n.x, n.y);
-            Util.mostrarMarcador(n.x, n.y, mat[i][7], mat[i][10], 0, marcadores, mapa);
+            Util.mostrarMarcador(n.x, n.y, mat[i][7], mat[i][10], 1, marcadores, mapa);
             marcadores.add(pos);
         }
         c.close();

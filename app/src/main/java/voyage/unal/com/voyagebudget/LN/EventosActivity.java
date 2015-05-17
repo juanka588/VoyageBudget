@@ -46,8 +46,11 @@ import android.widget.ListView;
 import android.widget.Space;
 import android.widget.Toast;
 
-public class EventosActivity {
-/*	NotificationManager nm;
+import voyage.unal.com.voyagebudget.DetallesActivity;
+
+public class EventosActivity extends Activity {
+	/*
+	NotificationManager nm;
 	Notification notif;
 	static String ns = Context.NOTIFICATION_SERVICE;
 	Intent deta;
@@ -91,7 +94,7 @@ public class EventosActivity {
 				LinearLayout.LayoutParams.MATCH_PARENT,
 				(int) (screenHeight * (factor))));
 
-		deta = new Intent(this, DetailsActivity.class);
+		deta = new Intent(this, DetallesActivity.class);
 
 		StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
 				.permitAll().build();
@@ -289,5 +292,5 @@ public class EventosActivity {
 		overridePendingTransition(R.anim.fade_in, R.anim.fade_out);
 		this.finish();
 	}
-	*/
+*/
 }

@@ -1,10 +1,14 @@
 package voyage.unal.com.voyagebudget;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -12,7 +16,24 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.StatusLine;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Random;
 
 import voyage.unal.com.voyagebudget.LN.Node;
 import voyage.unal.com.voyagebudget.LN.Travel;
@@ -34,6 +55,9 @@ public class RutaActivity extends ActionBarActivity {
     private double time;
     private double budget;
     private Node current;
+    private boolean recargable;
+    private JSONArray jsonArray;
+    private String readTwitterFeed;
 
     @Override
     protected void onResume() {
@@ -74,14 +98,124 @@ public class RutaActivity extends ActionBarActivity {
     }
 
     private void drawLine(Node ini, Node fin) {
+       /* StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+                .permitAll().build();
+        StrictMode.setThreadPolicy(policy);
+        URL url;
+        try {
+            url = new URL("http://maps.googleapis.com/maps/api/directions/json?origin=" + ini.x + "," +
+                    ini.y + "&destination=" + fin.x + "," + fin.y + "&sensor=true");
+            new EventFetch().execute(url);
+        } catch (MalformedURLException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+*/
         LatLng a = new LatLng(ini.x, ini.y);
         LatLng b = new LatLng(fin.x, fin.y);
         drawLine(a, b);
     }
 
     private void drawLine(LatLng ini, LatLng fin) {
-        polyLine.add(ini);
-        polyLine.add(fin);
+        Random rnd = new Random();
+        int r=rnd.nextInt(8);
+        int color = Color.RED;
+        switch (r){
+            case 0:
+                color = Color.BLUE;
+                break;
+            case 1:
+                color = Color.GREEN;
+                break;
+            case 2:
+                color = Color.CYAN;
+                break;
+            case 3:
+                color = Color.MAGENTA;
+                break;
+            case 4:
+                color = Color.BLACK;
+                break;
+            case 5:
+                color = Color.YELLOW;
+                break;
+            case 6:
+                color = Color.GRAY;
+                break;
+        }
+
+        polyLine.add(ini).color(color).width(5).geodesic(true);;
+        polyLine.add(fin).color(color).width(5).geodesic(true);;
+    }
+
+    public void recargarLista() {
+        ArrayList<String[]> cad2 = new ArrayList<String[]>();
+        try {
+            jsonArray = new JSONArray(readTwitterFeed);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                String arr[] = new String[]{jsonObject.getString("titulo"),
+                        jsonObject.getString("descripcion"),
+                        jsonObject.getString("lugar"),
+                        jsonObject.getString("fecha"),
+                        jsonObject.getString("email"),
+                        jsonObject.getString("enlace"),
+                        jsonObject.getString("telefono")};
+                cad2.add(arr);
+            }
+
+        } catch (Exception e) {
+            Log.e("Error Eventos", e.toString());
+        }
+    }
+
+    private class EventFetch extends AsyncTask<URL, Integer, String> {
+
+        @Override
+        protected String doInBackground(URL... params) {
+            // TODO Auto-generated method stub
+            readTwitterFeed = readJSONFeed(params[0]);
+            recargable = true;
+
+            return readTwitterFeed;
+        }
+
+        protected void onPostExecute(Long result) {
+            recargarLista();
+        }
+
+        public String readJSONFeed(URL params) {
+            StringBuilder builder = new StringBuilder();
+            HttpClient client = new DefaultHttpClient();
+            HttpGet httpGet = new HttpGet(params.toString());
+            try {
+                HttpResponse response = client.execute(httpGet);
+                StatusLine statusLine = response.getStatusLine();
+                int statusCode = statusLine.getStatusCode();
+                if (statusCode == 200) {
+                    HttpEntity entity = response.getEntity();
+                    InputStream content = entity.getContent();
+                    BufferedReader reader = new BufferedReader(
+                            new InputStreamReader(content));
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        builder.append(line);
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(),
+                            "No se ha accedido al servidor de Eventos", 1)
+                            .show();
+                    Log.e(RutaActivity.class.toString(),
+                            "Failed to download file");
+                }
+
+            } catch (ClientProtocolException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return builder.toString();
+        }
     }
 
     /**
@@ -111,7 +245,7 @@ public class RutaActivity extends ActionBarActivity {
             n = new Node(mat[i][0], mat[i][1], mat[i][2], mat[i][3], mat[i][4], mat[i][5]);
             nodos.add(n);
             pos = new LatLng(n.x, n.y);
-            Util.mostrarMarcador(n.x, n.y, mat[i][7], mat[i][10], 0, marcadores, mapa);
+            Util.mostrarMarcador(n.x, n.y, mat[i][7], mat[i][10], 2, marcadores, mapa);
             marcadores.add(pos);
             Log.e("nodo", n.toString());
         }
@@ -120,21 +254,23 @@ public class RutaActivity extends ActionBarActivity {
         time = b.getDouble("tiempo");
         latitud = b.getDouble("latitud");
         longitud = b.getDouble("longitud");
-        Util.animarCamara(latitud,longitud,14,mapa);
+        Util.animarCamara(latitud, longitud, 14, mapa);
         current = new Node(0, latitud, longitud, 0, 0, 0);
         pathOrder = t.createPath(current, nodos, budget, time);
-        Log.e("bud", budget+"");
-        Log.e("time", time+"");
-        Log.e("lat", latitud+"");
-        Log.e("lon", longitud+"");
-        Log.e("size Path",pathOrder.size()+"");
-        if(!pathOrder.isEmpty())
+        Log.e("bud", budget + "");
+        Log.e("time", time + "");
+        Log.e("lat", latitud + "");
+        Log.e("lon", longitud + "");
+        Log.e("size Path", pathOrder.size() + "");
+        if (!pathOrder.isEmpty())
             drawLine(current, pathOrder.get(0));
         for (int i = 1; i < pathOrder.size(); i++) {
             Log.e("lugar ", pathOrder.get(i - 1).toString());
             drawLine(pathOrder.get(i - 1), pathOrder.get(i));
+            drawPolilyne(polyLine);
+            polyLine = new PolylineOptions();
         }
-        drawPolilyne(polyLine);
+
     }
 
     public void pasos(View v) {

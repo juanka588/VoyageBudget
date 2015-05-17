@@ -339,39 +339,45 @@ public class Util {
 
     public static void mostrarMarcador(double lat, double lng, String title,
                                        String desc, int tipo, ArrayList<LatLng> marcadores, GoogleMap mapa) {
-        /*
-         * float a = 0; switch (count) { case 0: a =
-		 * BitmapDescriptorFactory.HUE_CYAN; break; case 1: a =
-		 * BitmapDescriptorFactory.HUE_ORANGE; break; case 2: a =
-		 * BitmapDescriptorFactory.HUE_VIOLET; break; case 3: a =
-		 * BitmapDescriptorFactory.HUE_YELLOW; break; case 4: a =
-		 * BitmapDescriptorFactory.HUE_ORANGE; break;
-		 *
-		 * default: break; }
-		 */
+        float a = 0;
+        switch (tipo) {
+            case 0:
+                a =
+                        BitmapDescriptorFactory.HUE_CYAN;
+                break;
+            case 1:
+                a =
+                        BitmapDescriptorFactory.HUE_ORANGE;
+                break;
+            case 2:
+                a =
+                        BitmapDescriptorFactory.HUE_VIOLET;
+                break;
+            case 3:
+                a =
+                        BitmapDescriptorFactory.HUE_YELLOW;
+                break;
+            case 4:
+                a =
+                        BitmapDescriptorFactory.HUE_ORANGE;
+                break;
+
+            default:
+                break;
+        }
+
         if (marcadores == null) {
             marcadores = new ArrayList<>();
         }
         if (!marcadores.contains(new LatLng(lat, lng))) {
             marcadores.add(new LatLng(lat, lng));
             MarkerOptions k = null;
-            if (tipo == 0) {
-                k = new MarkerOptions()
-                        .position(new LatLng(lat, lng))
-                        .title(title)
-                        .snippet(desc)
-                        .icon(BitmapDescriptorFactory
-                                .defaultMarker(BitmapDescriptorFactory.HUE_VIOLET));
-
-            } else {
-                k = new MarkerOptions()
-                        .position(new LatLng(lat, lng))
-                        .title(title)
-                        .snippet(desc)
-                        .icon(BitmapDescriptorFactory
-                                .defaultMarker(BitmapDescriptorFactory.HUE_ORANGE));
-                // .fromResource(R.drawable.edificiop2));
-            }
+            k = new MarkerOptions()
+                    .position(new LatLng(lat, lng))
+                    .title(title)
+                    .snippet(desc)
+                    .icon(BitmapDescriptorFactory
+                            .defaultMarker(a));
             if (mapa != null) {
                 mapa.addMarker(k);
             }
