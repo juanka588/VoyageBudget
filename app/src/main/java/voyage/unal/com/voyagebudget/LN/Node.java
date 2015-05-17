@@ -22,6 +22,16 @@ public class Node implements Comparable<Node> {
         time = TIME;
         rate=RATE;
     }
+    public Node(Node newNode){
+        this.id = newNode.id;
+        this.name = newNode.name;
+        this.x = newNode.x;
+        this.y = newNode.y;
+        this.cost = newNode.cost;
+        this.time = newNode.time;
+        this.rate = newNode.rate;
+        this.fitness = newNode.fitness;
+    }
 
     public Node(String s, String s1, String s2,String name, String s3, String s4, String s5) {
         id = Integer.parseInt(s);

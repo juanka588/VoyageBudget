@@ -100,7 +100,7 @@ public class RutaActivity extends ActionBarActivity {
     }
 
     private void drawLine(Node ini, Node fin) {
-        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+        /*StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                 .permitAll().build();
         StrictMode.setThreadPolicy(policy);
         URL url;
@@ -112,6 +112,7 @@ public class RutaActivity extends ActionBarActivity {
             // TODO Auto-generated catch block
             e1.printStackTrace();
         }
+        */
         LatLng a = new LatLng(ini.x, ini.y);
         LatLng b = new LatLng(fin.x, fin.y);
         drawLine(a, b);

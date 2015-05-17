@@ -108,11 +108,11 @@ public class Travel {
         double currentTime = maxTime - path.get(0).time + distance(current,path.get(0));
 
         for( int i = 1 ; i < n; i ++ ){
-            Node e1 = place.get(i - 1);
-            Node e2 = place.get(i);
-            trip.add(new Step(e1,e2,currentTime - e1.time- e2.time - distance(e1,e2), currentCost - e1.cost - e2.cost));
+            Node e1 = new Node(place.get(i - 1));
+            Node e2 = new Node(place.get(i));
+            trip.add(new Step(e1,e2,currentTime - e1.time - e2.time - distance(e1,e2), currentCost - e1.cost - e2.cost));
             currentTime -= e1.time - e2.time;
-            currentTime -= e1.cost - e2.cost;
+            currentCost -= e1.cost - e2.cost;
         }
 
         return trip;
