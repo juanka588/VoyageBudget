@@ -29,6 +29,7 @@ public class SitiosActivity extends ActionBarActivity {
         setContentView(R.layout.activity_sitios);
         lv = (ListView) findViewById(R.id.listSitios);
         act = this;
+        rows=new ArrayList<>();
         Bundle b = getIntent().getExtras();
         try {
             rows = b.getStringArrayList("rows");

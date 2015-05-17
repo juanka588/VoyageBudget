@@ -98,7 +98,7 @@ public class Travel {
             }
          */
         }
-        n = Math.max(10,place.size());
+        n = Math.min(10,place.size());
 
         for(int i = 0; i < n; i ++) {
             permutation(place.get(i).cost,place.get(i).time + distance(current, place.get(i)), (1<<i), i);

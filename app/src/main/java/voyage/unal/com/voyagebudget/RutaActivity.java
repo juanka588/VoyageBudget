@@ -98,7 +98,7 @@ public class RutaActivity extends ActionBarActivity {
     }
 
     private void drawLine(Node ini, Node fin) {
-       StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder()
                 .permitAll().build();
         StrictMode.setThreadPolicy(policy);
         URL url;
@@ -171,7 +171,7 @@ public class RutaActivity extends ActionBarActivity {
             // TODO Auto-generated method stub
             readTwitterFeed = readJSONFeed(params[0]);
             recargable = true;
-
+            Log.e("JSON Leido", readTwitterFeed);
             return readTwitterFeed;
         }
 
@@ -237,7 +237,7 @@ public class RutaActivity extends ActionBarActivity {
         Node n = null;
         LatLng pos = null;
         for (int i = 0; i < mat.length; i++) {
-            n = new Node(mat[i][0], mat[i][1], mat[i][2],mat[i][7], mat[i][3], mat[i][4], mat[i][5]);
+            n = new Node(mat[i][0], mat[i][1], mat[i][2], mat[i][7], mat[i][3], mat[i][4], mat[i][5]);
             nodos.add(n);
             pos = new LatLng(n.x, n.y);
             Util.mostrarMarcador(n.x, n.y, n.name, mat[i][10], 2, marcadores, mapa);
@@ -250,7 +250,7 @@ public class RutaActivity extends ActionBarActivity {
         latitud = b.getDouble("latitud");
         longitud = b.getDouble("longitud");
         Util.animarCamara(latitud, longitud, 14, mapa);
-        current = new Node(0, latitud, longitud,"Mi ubicacion", 0, 0, 0);
+        current = new Node(0, latitud, longitud, "Mi ubicacion", 0, 0, 0);
         pathOrder = t.createPath(current, nodos, budget, time);
         Log.e("bud", budget + "");
         Log.e("time", time + "");
